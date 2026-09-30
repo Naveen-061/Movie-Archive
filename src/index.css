@@ -1,0 +1,375 @@
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+:root {
+  --bg-primary: #0f1014;
+  --bg-secondary: #15161b;
+
+  --surface: #18191d;
+  --surface-elevated: #202125;
+  --surface-hover: #28292d;
+
+  --input-bg: #242426;
+
+  --poster-bg: #111111;
+
+  --text-primary: #f5f5f5;
+  --text-secondary: #c8c8c8;
+  --text-muted: #8f8f8f;
+
+  --border-color: #303136;
+  --border-hover: #44464c;
+
+  --accent: #ff9800;
+  --accent-hover: #ffad32;
+  --accent-text: #111111;
+
+  --accent-soft: rgba(255, 152, 0, 0.12);
+  --accent-glow: rgba(255, 152, 0, 0.25);
+
+  --rating-color: #ffd54a;
+
+  color-scheme: dark;
+}
+
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+:root[data-theme="light"] {
+  --bg-primary: #f3f4f6;
+  --bg-secondary: #ffffff;
+
+  --surface: #ffffff;
+  --surface-elevated: #f7f7f8;
+  --surface-hover: #eeeeef;
+
+  --input-bg: #f1f2f4;
+
+  --poster-bg: #e2e3e5;
+
+  --text-primary: #18191d;
+  --text-secondary: #45474d;
+  --text-muted: #777a82;
+
+  --border-color: #d5d7db;
+  --border-hover: #b8bbc1;
+
+  --accent: #e87900;
+  --accent-hover: #f58b00;
+  --accent-text: #ffffff;
+
+  --accent-soft: rgba(232, 121, 0, 0.10);
+  --accent-glow: rgba(232, 121, 0, 0.20);
+
+  --rating-color: #c98200;
+
+  color-scheme: light;
+}
+
+
+/* =========================================================
+   GLOBAL RESET
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  background: var(--bg-primary);
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  background: var(--bg-primary);
+  color: var(--text-primary);
+
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+
+/* =========================================================
+   GLOBAL FORM ELEMENTS
+   ========================================================= */
+
+input,
+select,
+textarea {
+  background: var(--input-bg);
+  color: var(--text-primary);
+
+  border-color: var(--border-color);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+select option {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+button {
+  color: inherit;
+}
+
+
+/* =========================================================
+   APP BACKGROUND
+   ========================================================= */
+
+.app {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   MOVIE SECTIONS
+   ========================================================= */
+
+.movie-section {
+  color: var(--text-primary);
+}
+
+.movie-section-header h2 {
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   MOVIE CARD
+   ========================================================= */
+
+.movie-card {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+
+  border-color: var(--border-color) !important;
+}
+
+.movie-info {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+}
+
+.movie-title {
+  color: var(--text-primary) !important;
+}
+
+.movie-meta {
+  color: var(--text-secondary) !important;
+}
+
+.movie-rating {
+  color: var(--rating-color) !important;
+}
+
+.highly-rated {
+  color: var(--accent) !important;
+}
+
+.movie-actions button {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.movie-actions button:hover {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.view-button {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+}
+
+
+/* =========================================================
+   MOVIE FILTERS
+   ========================================================= */
+
+.movie-filters,
+.filters-container {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.movie-filters input,
+.movie-filters select,
+.filters-container input,
+.filters-container select {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.movie-filters label,
+.filters-container label {
+  color: var(--text-secondary) !important;
+}
+
+.movie-filters select option,
+.filters-container select option {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   MORE MOVIES CARD
+   ========================================================= */
+
+.more-movies-card {
+  background:
+    radial-gradient(
+      circle at center,
+      var(--accent-soft),
+      transparent 55%
+    ),
+    var(--surface) !important;
+
+  color: var(--text-primary) !important;
+
+  border-color: var(--border-color) !important;
+}
+
+.more-movies-card:hover {
+  border-color: var(--accent) !important;
+}
+
+.more-movies-title {
+  color: var(--text-primary) !important;
+}
+
+.more-movies-subtitle {
+  color: var(--text-muted) !important;
+}
+
+.more-movies-arrow {
+  color: var(--accent) !important;
+}
+
+
+/* =========================================================
+   MOVIE GRID SCROLLBAR
+   ========================================================= */
+
+.movie-grid::-webkit-scrollbar {
+  height: 7px;
+}
+
+.movie-grid::-webkit-scrollbar-track {
+  background: var(--surface-elevated);
+}
+
+.movie-grid::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 10px;
+}
+
+.movie-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+
+/* =========================================================
+   WATCHLIST
+   ========================================================= */
+
+.watchlist-page {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.watchlist-card {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+
+/* =========================================================
+   GENERAL TEXT
+   ========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+
+/* =========================================================
+   THEME TRANSITION
+   ========================================================= */
+
+.app,
+.movie-section,
+.movie-card,
+.movie-info,
+.movie-filters,
+.filters-container,
+.watchlist-page,
+.watchlist-card,
+input,
+select,
+textarea {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  body {
+    min-width: 320px;
+  }
+}

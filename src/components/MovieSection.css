@@ -1,0 +1,24 @@
+.movie-section {
+  width: 100%;
+  color: var(--text-primary);
+}
+
+.movie-section-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 8px;
+}
+
+.movie-section-header h2 {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: 24px;
+  font-weight: 800;
+}

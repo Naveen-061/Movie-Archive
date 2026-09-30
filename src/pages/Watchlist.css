@@ -1,0 +1,90 @@
+.watchlist-page {
+  min-height: 100vh;
+
+  padding: 35px 24px;
+
+  background: #101010;
+  color: white;
+}
+
+.watchlist-header {
+  max-width: 1400px;
+
+  margin: 0 auto 10px;
+}
+
+.watchlist-header h1 {
+  margin: 0;
+
+  font-size: 32px;
+}
+
+.watchlist-header p {
+  margin-top: 8px;
+
+  color: #999;
+}
+
+.empty-watchlist {
+  max-width: 500px;
+
+  margin: 100px auto;
+
+  text-align: center;
+
+  padding: 50px 25px;
+
+  border: 1px solid #2d2d2d;
+  border-radius: 15px;
+
+  background: #181818;
+
+  box-shadow:
+    0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.empty-icon {
+  font-size: 55px;
+
+  margin-bottom: 15px;
+}
+
+.empty-watchlist h2 {
+  margin: 0 0 10px;
+}
+
+.empty-watchlist p {
+  color: #999;
+
+  line-height: 1.6;
+}
+
+.browse-movies-button {
+  display: inline-block;
+
+  margin-top: 20px;
+
+  padding: 11px 18px;
+
+  border-radius: 8px;
+
+  background: #ff9800;
+
+  color: #111;
+
+  text-decoration: none;
+
+  font-weight: 600;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.browse-movies-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 0 15px rgba(255, 152, 0, 0.4),
+    0 0 30px rgba(255, 152, 0, 0.15);
+}

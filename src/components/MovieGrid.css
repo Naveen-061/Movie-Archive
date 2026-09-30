@@ -1,0 +1,590 @@
+/* ========================================
+   MOVIE GRID / HORIZONTAL SWIPE
+======================================== */
+
+.movie-grid {
+  display: flex;
+
+  flex-direction: row;
+
+  flex-wrap: nowrap;
+
+  align-items: flex-start;
+
+  gap: 24px;
+
+  width: 100%;
+
+  /*
+    Horizontal scrolling is still available
+    internally, but there is no visible scrollbar.
+  */
+  overflow-x: auto;
+
+  overflow-y: hidden;
+
+  padding: 5px 0 20px;
+
+  box-sizing: border-box;
+
+  /*
+    Enable native horizontal finger swipe.
+  */
+  touch-action: pan-x;
+
+  /*
+    Hide scrollbar in Firefox.
+  */
+  scrollbar-width: none;
+
+  /*
+    Hide scrollbar in old Edge/IE.
+  */
+  -ms-overflow-style: none;
+
+  /*
+    Prevent accidental text selection
+    while swiping.
+  */
+  user-select: none;
+
+  /*
+    IMPORTANT:
+    Do NOT add wheel events here.
+    Do NOT add pointer capture here.
+  */
+}
+
+
+/* ========================================
+   HIDE CHROME / EDGE SCROLLBAR
+======================================== */
+
+.movie-grid::-webkit-scrollbar {
+  display: none;
+
+  width: 0;
+
+  height: 0;
+}
+
+
+/* ========================================
+   NORMAL MOVIE CARDS
+======================================== */
+
+.movie-grid .movie-card {
+  flex: 0 0 250px;
+
+  width: 250px;
+
+  min-width: 250px;
+
+  max-width: 250px;
+
+  box-sizing: border-box;
+
+  align-self: flex-start;
+}
+
+
+/* ========================================
+   MORE MOVIES CARD
+======================================== */
+
+.movie-grid .more-movies-card {
+  /*
+    Same width as normal movie cards.
+  */
+  flex: 0 0 250px;
+
+  width: 250px;
+
+  min-width: 250px;
+
+  max-width: 250px;
+
+  /*
+    Height is supplied dynamically
+    from MovieGrid.jsx.
+
+    It measures the real movie card
+    and copies its height.
+  */
+  align-self: flex-start;
+
+  box-sizing: border-box;
+
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 25px 20px;
+
+  overflow: hidden;
+
+  border: 1px solid #333;
+
+  border-radius: 10px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(
+        255,
+        152,
+        0,
+        0.12
+      ),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      #202020,
+      #151515
+    );
+
+  color: #ddd;
+
+  cursor: pointer;
+
+  font-family: inherit;
+
+  text-align: center;
+
+  appearance: none;
+
+  /*
+    Never allow the More Movies
+    card to shrink horizontally.
+  */
+  flex-shrink: 0;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+
+/* ========================================
+   MORE MOVIES SHINE
+======================================== */
+
+.movie-grid
+.more-movies-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      transparent 35%,
+      rgba(
+        255,
+        152,
+        0,
+        0.08
+      ),
+      transparent 65%
+    );
+
+  transform:
+    translateX(-100%);
+
+  transition:
+    transform 0.5s ease;
+}
+
+.movie-grid
+.more-movies-card:hover::before {
+  transform:
+    translateX(100%);
+}
+
+
+/* ========================================
+   MORE MOVIES HOVER
+======================================== */
+
+.movie-grid
+.more-movies-card:hover {
+  transform:
+    translateY(-5px);
+
+  border-color:
+    #ff9800;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(
+        255,
+        152,
+        0,
+        0.18
+      ),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      #242424,
+      #181818
+    );
+
+  box-shadow:
+    0 12px 35px
+      rgba(
+        0,
+        0,
+        0,
+        0.45
+      ),
+    0 0 25px
+      rgba(
+        255,
+        152,
+        0,
+        0.08
+      );
+}
+
+
+/* ========================================
+   MORE MOVIES DISABLED / LOADING
+======================================== */
+
+.movie-grid
+.more-movies-card:disabled {
+  cursor: wait;
+
+  opacity: 0.7;
+
+  transform: none;
+}
+
+
+/* ========================================
+   MORE MOVIES PLUS ICON
+======================================== */
+
+.more-movies-glow {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 65px;
+
+  height: 65px;
+
+  flex-shrink: 0;
+
+  border:
+    2px solid
+    rgba(
+      255,
+      152,
+      0,
+      0.7
+    );
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      255,
+      152,
+      0,
+      0.08
+    );
+
+  color:
+    #ff9800;
+
+  font-size: 32px;
+
+  line-height: 1;
+
+  box-shadow:
+    0 0 25px
+      rgba(
+        255,
+        152,
+        0,
+        0.12
+      );
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* ========================================
+   PLUS ICON HOVER
+======================================== */
+
+.movie-grid
+.more-movies-card:hover
+.more-movies-glow {
+  transform:
+    scale(1.08);
+
+  box-shadow:
+    0 0 35px
+      rgba(
+        255,
+        152,
+        0,
+        0.25
+      );
+}
+
+
+/* ========================================
+   MORE MOVIES TITLE
+======================================== */
+
+.more-movies-title {
+  position: relative;
+
+  display: block;
+
+  color: #fff;
+
+  font-size: 18px;
+
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  text-align: center;
+}
+
+
+/* ========================================
+   MORE MOVIES SUBTITLE
+======================================== */
+
+.more-movies-subtitle {
+  position: relative;
+
+  display: block;
+
+  max-width: 180px;
+
+  color: #888;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  text-align: center;
+}
+
+
+/* ========================================
+   MORE MOVIES ARROW
+======================================== */
+
+.more-movies-arrow {
+  position: relative;
+
+  display: block;
+
+  color:
+    #ff9800;
+
+  font-size: 24px;
+
+  line-height: 1;
+
+  transition:
+    transform 0.25s ease;
+}
+
+.movie-grid
+.more-movies-card:hover
+.more-movies-arrow {
+  transform:
+    translateX(7px);
+}
+
+
+/* ========================================
+   LARGE DESKTOP
+======================================== */
+
+@media (min-width: 1400px) {
+  .movie-grid {
+    gap: 24px;
+  }
+
+  .movie-grid .movie-card,
+  .movie-grid .more-movies-card {
+    flex-basis: 250px;
+
+    width: 250px;
+
+    min-width: 250px;
+
+    max-width: 250px;
+  }
+}
+
+
+/* ========================================
+   NORMAL DESKTOP
+======================================== */
+
+@media (
+  min-width: 1000px
+) and (
+  max-width: 1399px
+) {
+  .movie-grid {
+    gap: 20px;
+  }
+
+  .movie-grid .movie-card,
+  .movie-grid .more-movies-card {
+    flex-basis: 230px;
+
+    width: 230px;
+
+    min-width: 230px;
+
+    max-width: 230px;
+  }
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (
+  min-width: 600px
+) and (
+  max-width: 999px
+) {
+  .movie-grid {
+    gap: 18px;
+  }
+
+  .movie-grid .movie-card,
+  .movie-grid .more-movies-card {
+    flex-basis: 210px;
+
+    width: 210px;
+
+    min-width: 210px;
+
+    max-width: 210px;
+  }
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 599px) {
+  .movie-grid {
+    gap: 14px;
+
+    padding-bottom: 15px;
+
+    /*
+      Finger can move horizontally.
+    */
+    touch-action: pan-x;
+  }
+
+  .movie-grid .movie-card,
+  .movie-grid .more-movies-card {
+    flex-basis: 180px;
+
+    width: 180px;
+
+    min-width: 180px;
+
+    max-width: 180px;
+  }
+
+  .more-movies-glow {
+    width: 58px;
+
+    height: 58px;
+
+    font-size: 28px;
+  }
+
+  .more-movies-title {
+    font-size: 16px;
+  }
+
+  .more-movies-subtitle {
+    max-width: 150px;
+
+    font-size: 11px;
+  }
+
+  .more-movies-arrow {
+    font-size: 21px;
+  }
+}
+/* Desktop mouse drag */
+
+.movie-grid {
+  cursor: grab;
+}
+
+.movie-grid.movie-grid-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+/* Prevent poster images from being
+   dragged separately by the browser */
+
+.movie-grid .movie-poster {
+  -webkit-user-drag: none;
+}
+
+/* Hide the scrollbar */
+
+.movie-grid {
+  scrollbar-width: none;
+}
+
+.movie-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Preserve native touch gestures */
+
+@media (pointer: coarse) {
+  .movie-grid {
+    cursor: auto;
+    touch-action: pan-x;
+  }
+}
