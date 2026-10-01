@@ -15,6 +15,8 @@ import MovieSection from "./components/MovieSection.jsx";
 import MovieDetails from "./pages/MovieDetails.jsx";
 import Watchlist from "./pages/Watchlist.jsx";
 import Search from "./pages/Search.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
 
 import {
   getWatchlist,
@@ -1844,6 +1846,24 @@ function App() {
                 }
               />
             </>
+          }
+        />
+
+        {/* LOGIN */}
+
+        <Route
+          path="/login"
+          element={
+            <Login />
+          }
+        />
+
+        {/* SIGNUP */}
+
+        <Route
+          path="/signup"
+          element={
+            <Signup />
           }
         />
 
