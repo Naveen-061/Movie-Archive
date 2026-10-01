@@ -1,4 +1,9 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import useWheelMomentum from "./hooks/useWheelMomentum.js";
 
 import {
   BrowserRouter,
@@ -1692,6 +1697,8 @@ function mapWatchlistMovie(movie) {
 }
 
 function App() {
+  useWheelMomentum();
+
   const [watchlist, setWatchlist] =
     useState([]);
 

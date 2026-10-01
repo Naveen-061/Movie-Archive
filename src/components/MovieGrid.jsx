@@ -27,13 +27,14 @@ function MovieGrid({
     startY: 0,
     scrollLeft: 0,
     blockClick: false,
+    lastX: 0,
+    lastTime: 0,
+    velocity: 0,
   });
 
-  const touchRef = useRef({
-    startX: 0,
-    startY: 0,
-    moved: false,
-    horizontal: false,
+  const momentumRef = useRef({
+    animationFrame: null,
+    velocity: 0,
   });
 
   useEffect(() => {
@@ -70,6 +71,27 @@ function MovieGrid({
   }, [movies]);
 
   /*
+    Stop any running momentum animation.
+  */
+
+  function stopMomentum() {
+    if (
+      momentumRef.current
+        .animationFrame !== null
+    ) {
+      cancelAnimationFrame(
+        momentumRef.current
+          .animationFrame
+      );
+
+      momentumRef.current.animationFrame =
+        null;
+    }
+
+    momentumRef.current.velocity = 0;
+  }
+
+  /*
     DESKTOP MOUSE DRAG
   */
 
@@ -85,6 +107,10 @@ function MovieGrid({
 
     if (!grid) return;
 
+    stopMomentum();
+
+    const now = performance.now();
+
     dragRef.current = {
       pressed: true,
       dragging: false,
@@ -92,6 +118,9 @@ function MovieGrid({
       startY: event.clientY,
       scrollLeft: grid.scrollLeft,
       blockClick: false,
+      lastX: event.clientX,
+      lastTime: now,
+      velocity: 0,
     };
   }
 
@@ -141,8 +170,115 @@ function MovieGrid({
       );
     }
 
+    const now = performance.now();
+    const elapsed =
+      now - drag.lastTime;
+
+    if (elapsed > 0) {
+      /*
+        Mouse movement velocity.
+
+        Positive velocity means the pointer
+        moved right, so the content moves left.
+      */
+      drag.velocity =
+        (event.clientX - drag.lastX) /
+        elapsed;
+    }
+
+    drag.lastX = event.clientX;
+    drag.lastTime = now;
+
     grid.scrollLeft =
       drag.scrollLeft - deltaX;
+  }
+
+  /*
+    Continue scrolling after the mouse
+    is released.
+  */
+
+  function startMomentum() {
+    const grid = gridRef.current;
+
+    if (!grid) return;
+
+    let velocity =
+      dragRef.current.velocity;
+
+    /*
+      Convert pointer velocity into
+      scroll velocity.
+
+      The multiplier controls how far
+      the row continues after release.
+    */
+    velocity *= 25;
+
+    /*
+      Prevent tiny accidental movement.
+    */
+    if (Math.abs(velocity) < 0.3) {
+      return;
+    }
+
+    /*
+      Limit maximum momentum speed.
+    */
+    velocity = Math.max(
+      -35,
+      Math.min(35, velocity)
+    );
+
+    momentumRef.current.velocity =
+      velocity;
+
+    function animate() {
+      const currentVelocity =
+        momentumRef.current.velocity;
+
+      if (
+        Math.abs(currentVelocity) < 0.15
+      ) {
+        momentumRef.current.animationFrame =
+          null;
+
+        momentumRef.current.velocity =
+          0;
+
+        grid.classList.remove(
+          "movie-grid-momentum"
+        );
+
+        return;
+      }
+
+      grid.scrollLeft -=
+        currentVelocity;
+
+      /*
+        Friction.
+
+        Smaller value = longer glide.
+        Larger value = stops faster.
+      */
+      momentumRef.current.velocity *=
+        0.95;
+
+      momentumRef.current.animationFrame =
+        requestAnimationFrame(
+          animate
+        );
+    }
+
+    grid.classList.add(
+      "movie-grid-momentum"
+    );
+
+    momentumRef.current.animationFrame =
+      requestAnimationFrame(
+        animate
+      );
   }
 
   function handlePointerUp(event) {
@@ -154,6 +290,9 @@ function MovieGrid({
     ) {
       return;
     }
+
+    const wasDragging =
+      drag.dragging;
 
     drag.pressed = false;
     drag.dragging = false;
@@ -171,119 +310,19 @@ function MovieGrid({
         event.pointerId
       );
     }
+
+    /*
+      Start momentum only after an
+      actual horizontal drag.
+    */
+    if (wasDragging) {
+      startMomentum();
+    }
   }
 
   /*
-    MOBILE TOUCH HANDLING
-
-    We let the browser perform the
-    normal horizontal scrolling.
-
-    We only detect whether the finger
-    actually moved so a swipe does not
-    accidentally activate a movie/card.
-  */
-
-  function handleTouchStart(event) {
-    const touch = event.touches[0];
-
-    if (!touch) return;
-
-    touchRef.current = {
-      startX: touch.clientX,
-      startY: touch.clientY,
-      moved: false,
-      horizontal: false,
-    };
-  }
-
-  function handleTouchMove(event) {
-    const touch = event.touches[0];
-
-    if (!touch) return;
-
-    const touchState =
-      touchRef.current;
-
-    const deltaX =
-      touch.clientX -
-      touchState.startX;
-
-    const deltaY =
-      touch.clientY -
-      touchState.startY;
-
-    const distanceX =
-      Math.abs(deltaX);
-
-    const distanceY =
-      Math.abs(deltaY);
-
-    if (
-      distanceX < 8 &&
-      distanceY < 8
-    ) {
-      return;
-    }
-
-    touchState.moved = true;
-
-    /*
-      Only block clicks for a horizontal
-      swipe.
-
-      Vertical movement belongs to the
-      normal page scroll.
-    */
-    if (distanceX > distanceY) {
-      touchState.horizontal = true;
-
-      dragRef.current.blockClick =
-        true;
-    }
-  }
-
-  function handleTouchEnd() {
-    /*
-      Keep blockClick active briefly because
-      mobile browsers fire the click event
-      immediately after touchend.
-    */
-    if (
-      touchRef.current.horizontal
-    ) {
-      dragRef.current.blockClick =
-        true;
-
-      window.setTimeout(() => {
-        dragRef.current.blockClick =
-          false;
-      }, 150);
-    }
-
-    touchRef.current = {
-      startX: 0,
-      startY: 0,
-      moved: false,
-      horizontal: false,
-    };
-  }
-
-  function handleTouchCancel() {
-    touchRef.current = {
-      startX: 0,
-      startY: 0,
-      moved: false,
-      horizontal: false,
-    };
-
-    dragRef.current.blockClick =
-      false;
-  }
-
-  /*
-    Prevent a horizontal swipe from
-    triggering the card click.
+    Prevent a desktop horizontal drag
+    from triggering a card click.
   */
 
   function handleClickCapture(event) {
@@ -297,6 +336,17 @@ function MovieGrid({
         false;
     }
   }
+
+  /*
+    Clean up animation when the component
+    is removed.
+  */
+
+  useEffect(() => {
+    return () => {
+      stopMomentum();
+    };
+  }, []);
 
   const validMovies =
     Array.isArray(movies)
@@ -323,18 +373,6 @@ function MovieGrid({
       }
       onPointerCancel={
         handlePointerUp
-      }
-      onTouchStart={
-        handleTouchStart
-      }
-      onTouchMove={
-        handleTouchMove
-      }
-      onTouchEnd={
-        handleTouchEnd
-      }
-      onTouchCancel={
-        handleTouchCancel
       }
       onClickCapture={
         handleClickCapture
