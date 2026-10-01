@@ -29,10 +29,13 @@ function MovieGrid({
     blockClick: false,
   });
 
-  /*
-    Match More Movies height to the
-    first normal movie card.
-  */
+  const touchRef = useRef({
+    startX: 0,
+    startY: 0,
+    moved: false,
+    horizontal: false,
+  });
+
   useEffect(() => {
     const grid = gridRef.current;
 
@@ -67,13 +70,7 @@ function MovieGrid({
   }, [movies]);
 
   /*
-    MOUSE DRAG
-
-    Do not capture the pointer when the
-    mouse is pressed.
-
-    Only capture it AFTER the user
-    actually starts dragging.
+    DESKTOP MOUSE DRAG
   */
 
   function handlePointerDown(event) {
@@ -116,10 +113,6 @@ function MovieGrid({
     const deltaY =
       event.clientY - drag.startY;
 
-    /*
-      Ignore tiny mouse movements.
-      These should remain normal clicks.
-    */
     if (!drag.dragging) {
       if (
         Math.abs(deltaX) < 6 &&
@@ -128,10 +121,6 @@ function MovieGrid({
         return;
       }
 
-      /*
-        Only start dragging when the
-        movement is primarily horizontal.
-      */
       if (
         Math.abs(deltaX) <=
         Math.abs(deltaY)
@@ -147,10 +136,6 @@ function MovieGrid({
         "movie-grid-dragging"
       );
 
-      /*
-        Capture only after detecting
-        an actual horizontal drag.
-      */
       grid.setPointerCapture?.(
         event.pointerId
       );
@@ -189,11 +174,118 @@ function MovieGrid({
   }
 
   /*
-    Block clicks only after an
-    actual horizontal drag.
+    MOBILE TOUCH HANDLING
 
-    Normal clicks are untouched.
+    We let the browser perform the
+    normal horizontal scrolling.
+
+    We only detect whether the finger
+    actually moved so a swipe does not
+    accidentally activate a movie/card.
   */
+
+  function handleTouchStart(event) {
+    const touch = event.touches[0];
+
+    if (!touch) return;
+
+    touchRef.current = {
+      startX: touch.clientX,
+      startY: touch.clientY,
+      moved: false,
+      horizontal: false,
+    };
+  }
+
+  function handleTouchMove(event) {
+    const touch = event.touches[0];
+
+    if (!touch) return;
+
+    const touchState =
+      touchRef.current;
+
+    const deltaX =
+      touch.clientX -
+      touchState.startX;
+
+    const deltaY =
+      touch.clientY -
+      touchState.startY;
+
+    const distanceX =
+      Math.abs(deltaX);
+
+    const distanceY =
+      Math.abs(deltaY);
+
+    if (
+      distanceX < 8 &&
+      distanceY < 8
+    ) {
+      return;
+    }
+
+    touchState.moved = true;
+
+    /*
+      Only block clicks for a horizontal
+      swipe.
+
+      Vertical movement belongs to the
+      normal page scroll.
+    */
+    if (distanceX > distanceY) {
+      touchState.horizontal = true;
+
+      dragRef.current.blockClick =
+        true;
+    }
+  }
+
+  function handleTouchEnd() {
+    /*
+      Keep blockClick active briefly because
+      mobile browsers fire the click event
+      immediately after touchend.
+    */
+    if (
+      touchRef.current.horizontal
+    ) {
+      dragRef.current.blockClick =
+        true;
+
+      window.setTimeout(() => {
+        dragRef.current.blockClick =
+          false;
+      }, 150);
+    }
+
+    touchRef.current = {
+      startX: 0,
+      startY: 0,
+      moved: false,
+      horizontal: false,
+    };
+  }
+
+  function handleTouchCancel() {
+    touchRef.current = {
+      startX: 0,
+      startY: 0,
+      moved: false,
+      horizontal: false,
+    };
+
+    dragRef.current.blockClick =
+      false;
+  }
+
+  /*
+    Prevent a horizontal swipe from
+    triggering the card click.
+  */
+
   function handleClickCapture(event) {
     if (
       dragRef.current.blockClick
@@ -220,11 +312,33 @@ function MovieGrid({
     <div
       ref={gridRef}
       className="movie-grid"
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      onClickCapture={handleClickCapture}
+      onPointerDown={
+        handlePointerDown
+      }
+      onPointerMove={
+        handlePointerMove
+      }
+      onPointerUp={
+        handlePointerUp
+      }
+      onPointerCancel={
+        handlePointerUp
+      }
+      onTouchStart={
+        handleTouchStart
+      }
+      onTouchMove={
+        handleTouchMove
+      }
+      onTouchEnd={
+        handleTouchEnd
+      }
+      onTouchCancel={
+        handleTouchCancel
+      }
+      onClickCapture={
+        handleClickCapture
+      }
     >
       {validMovies.map((movie) => (
         <MovieCard
